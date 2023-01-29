@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <title>MySauna</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script type="text/javascript" src="static/js/sauna.js"></script>
+    <link th:href="@{/css/index.css}" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+
+      <!-- 一覧画面 -->
+      <h1>サ活内容一覧</h1>
+      <div class="float-end">
+          <a th:href="@{/sauna/new}" class="btn btn-primary">登録はこちら</a>
+      </div>
+      <form th:action="@{/user/logout}" method="post" class="btn btn-link">
+        <button class="btn btn-outline-dark">ログアウト</button>
+      </form>
+      <div th:if="${saunalist}">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>施設名</th>
+              <th>サウナ温度</th>
+              <th>サウナ満足度</th>
+              <th>水風呂温度</th>
+              <th>水風呂満足度</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="sauna : ${saunalist}" th:object="${sauna}" class="align-middle">
+              <td th:text="*{name}"></td>
+              <td th:text="*{saunaTemp}"></td>
+              <td th:text="*{saunaSatisfaction}"></td>
+              <td th:text="*{waterTemp}">℃</td>
+              <td th:text="*{waterSatisfaction}"></td>
+              <td>
+                  <a th:href="@{/sauna/{id}/edit(id=*{id})}" class="btn btn-primary">編集</a>
+                  <a th:href="@{/sauna/{id}/delete(id=*{id})}" class="btn btn-secondary">削除</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="m-5">
+        <h2 id="graph">グラフ</h2>
+        <canvas id="saunaChart" class="mt-5"></canvas>
+        <canvas id="waterChart" class="mt-5"></canvas>
+
+        <script type="text/javascript" th:inline="javascript">
+          const saunalist = /*[[${saunalist}]]*/"saunalist";
+                     //sauna_tempの配列
+                     let saunaTempArray = [];
+          //sauna_tempデータの準備
+          const saunaTemp = saunalist.map(x=>x.saunaTemp);
+          for(var i = 0; i < saunaTemp.length; i++){
+            saunaTempArray.push(saunaTemp[i]);
+          }
+
+          //sauna_satisfactionの配列
+          let saunaSatisfactionArray = [];
+          //sauna_satisfactionデータの準備
+          const saunaSatisfaction = saunalist.map(x=>x.saunaSatisfaction);
+          for(var i = 0; i < saunaSatisfaction.length; i++){
+            saunaSatisfactionArray.push(saunaSatisfaction[i]);
+          }
+            //サウナ多次元連想配列 x: saunaTempArray, y: saunaSatisfactionArray
+            var saunaData = [];
+            for(var i = 0; i < saunaTempArray.length; i++){
+                 var data_tmp = {};
+                 data_tmp.x = saunaTempArray[i];
+                 data_tmp.y = saunaSatisfactionArray[i];
+                 saunaData.push(data_tmp);
+            }
+
+
+           //water_tempの配列
+          let waterTempArray = [];
+          //water_tempデータの準備
+          const waterTemp = saunalist.map(x=>x.waterTemp);
+          for(var i = 0; i < waterTemp.length; i++){
+            waterTempArray.push(waterTemp[i]);
+          }
+
+          //water_satisfactionの配列
+          let waterSatisfactionArray = [];
+          //water_satisfactionデータの準備
+          const waterSatisfaction = saunalist.map(x=>x.waterSatisfaction);
+          for(var i = 0; i < waterSatisfaction.length; i++){
+            waterSatisfactionArray.push(waterSatisfaction[i]);
+          }
+            //サウナ多次元連想配列 x: waterTempArray, y: waterSatisfactionArray
+            var waterData = [];
+            for(var i = 0; i < waterTempArray.length; i++){
+                 var data_tmp = {};
+                 data_tmp.x = waterTempArray[i];
+                 data_tmp.y = waterSatisfactionArray[i];
+                 waterData.push(data_tmp);
+            }
+
+        
+             //サウナグラフ
+            var ctx = document.getElementById("saunaChart");
+            var saunaChart = new Chart(ctx, {
+                  type: 'bubble',
+                  data: {
+                      datasets: [{
+                          label: 'サウナ室温度別の満足度',
+                          data: saunaData,
+                          backgroundColor: '#f88',
+                   }],
+                   },
+                   options: {
+                       scales: {
+                        y: {min: 0, max: 100},
+                        x: {min: 60, max: 150},
+                        yAxes: [{
+                          position: "right",
+                          scaleLabel: {             //軸ラベル設定
+                            display: true,           //表示設定
+                            labelString: '満足度(％)',  //ラベル
+                          },
+                        }],
+                        xAxes: [{                         //x軸設定
+                          scaleLabel: {                 //軸ラベル設定
+                            display: true,             //表示設定
+                            labelString: 'サウナ室温度(℃)',  //ラベル
+                          },
+                        }],
+                      },
+                    },
+                  });
+
+             //水風呂グラフ
+            var ctx = document.getElementById("waterChart");
+            var waterChart = new Chart(ctx, {
+                  type: 'bubble',
+                  data: {
+                      datasets: [{
+                          label: '水風呂温度別の満足度',
+                          data: waterData,
+                          backgroundColor: '#48f',
+                        }],
+                      },
+                      options: {
+                        scales: {
+                          y: {min: 0, max: 100},
+                          x: {min: 0, max: 30},
+                          yAxes: [{
+                          position: "right",
+                          scaleLabel: {             //軸ラベル設定
+                            display: true,           //表示設定
+                            labelString: '満足度(％)',  //ラベル
+                          },
+                        }],
+                        xAxes: [{                         //x軸設定
+                          scaleLabel: {                 //軸ラベル設定
+                            display: true,             //表示設定
+                            labelString: '水風呂温度(℃)',  //ラベル
+                          },
+                        }],
+                        },
+                      },
+                    });
+
+
+        </script>
+      </div>
+    </div>
+  </body>
+</html>

@@ -8,7 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.Data;
+
 @Entity
+@Data
 public class Sauna {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,31 +46,4 @@ public class Sauna {
   public Sauna() {
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
-  }
-
-  public String getSaunaName() {
-    return saunaName;
-  }
-
-  public void setSaunaName(String saunaName) {
-    this.saunaName = saunaName;
-  }
-
-  public Integer getSaunaTemp() {
-    return saunaTemp;
-  }
 }

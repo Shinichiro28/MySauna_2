@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <title>MySauna</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  </head>
+  <body>
+    <h1>サ活を投稿しよう！</h1>
+    <div th:if="${validationError}" th:each="error : ${validationError}">
+      <label class="text-danger" th:text="${error}"></label>
+    </div>
+    <form th:action="@{/sauna/create}" th:object="${sauna}" th:method="post">
+      <input type="hidden" th:field="*{userId}" />
+      <div class="form-group">
+        <label>施設名：<span class="text-danger">※</span></label>
+        <input type="text" th:field="*{saunaName}" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>サウナ温度：</label>
+        <input type="number" th:field="*{saunaTemp}" class="form-control">℃
+      </div>
+      <div class="form-group">
+        <label>サウナ回数：</label>
+        <input type="number" th:field="*{saunaTime}" class="form-control">回
+      </div>
+      <div class="form-group">
+        <label>サウナ満足度：</label>
+        <input type="text" th:field="*{saunaSatis}" class="form-control">％
+      </div>
+      <div class="form-group">
+        <label>水風呂温度：</label>
+        <input type="number" th:field="*{waterTemp}" class="form-control">℃
+      </div>
+      <div class="form-group">
+        <label>水風呂回数：</label>
+        <input type="number" th:field="*{waterTime}" class="form-control">回
+      </div>
+      <div class="form-group">
+        <label>水風呂満足度：</label>
+        <input type="text" th:field="*{waterSatis}" class="form-control">％
+      </div>
+      <br />
+      <div class="text-center">
+        <input type="submit" value="登録" class="btn btn-primary">
+        <a href="/sauna" class="btn btn-secondary">キャンセル</a>
+      </div>
+    </form>
+  </body>
+</html>
