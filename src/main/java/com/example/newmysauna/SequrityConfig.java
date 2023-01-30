@@ -18,9 +18,9 @@ public class SequrityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
-  //CSSフォルダのファイルはSpringSecurityの処理を適用しない
+  // CSSフォルダのファイルはSpringSecurityの処理を適用しない
   @Override
-  public void configure(WebSecurity web) throws Exception{
+  public void configure(WebSecurity web) throws Exception {
     web.ignoring().antMatchers("/css/**");
   }
 
@@ -38,9 +38,13 @@ public class SequrityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()
         .anyRequest()
         .authenticated();
+    // ログイン機能を有効
     http.formLogin()
         .loginPage("/user/login")
         .defaultSuccessUrl("/sauna")
+        .permitAll();
+    // ログアウト機能を有効
+    http.logout()
         .permitAll();
   }
 }
