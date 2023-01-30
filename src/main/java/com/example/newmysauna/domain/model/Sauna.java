@@ -17,10 +17,12 @@ public class Sauna {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
-
+  /*
+   * @ManyToOne
+   * 
+   * @JoinColumn(name = "user_id")
+   * private User user;
+   */
   @Column(name = "sauna_name", nullable = false, length = 20)
   private String saunaName;
 
