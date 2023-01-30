@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MySauna</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link th:href="@{/css/newUser.css}" rel="stylesheet">
+  </head>
+  <body>
+    <div class="main">
+      <h1 class="form_title">ユーザー登録</h1>
+      <form class="form" th:action="@{/user/new}" method="post" th:object="${form}">
+        <p th:if="${#fields.hasErrors('passwordValid')}" th:errors="*{passwordValid}" class="error-message"></p>
+        <p class="form_item">
+          <label for="username">名前</label>
+          <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error-message"></span>
+          <input type="text" name="username" id="username">
+        </p>
+        <p class="form_item">
+          <label for="password">パスワード</label>
+          <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-message"></span>
+          <input type="password" name="password" id="password" placeholder="8文字以上20文字以下">
+        </p>
+        <p class="form_item">
+          <input type="submit" class="btn btn-outline-success" value="登録">
+        </p>
+        <a href="/user/login" class="btn btn-info">ログインはこちら</a>
+      </form>
+    </div>
+  </body>
+</html>
